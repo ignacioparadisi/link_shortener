@@ -40,7 +40,10 @@ class App extends StatelessWidget {
           }
           return null;
         },
-        onSubmit: (isValid) async {
+        onSubmit: (isValid, value) async {
+          if (value == null || value.isEmpty) {
+            return;
+          }
           if (isValid) {
             await Future.delayed(Duration(seconds: 2));
           }

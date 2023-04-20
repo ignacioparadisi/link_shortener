@@ -6,7 +6,7 @@ import 'package:nu_link_shortener/presentation/url_form/views/url_form_button.da
 @immutable
 class URLForm extends StatefulWidget {
   final String? Function(String?)? validator;
-  final Future<void> Function(bool)? onSubmit;
+  final Future<void> Function(bool, String?)? onSubmit;
   const URLForm(
       {super.key, this.initialOpen, this.validator, this.onSubmit});
 
@@ -92,7 +92,7 @@ class _URLFormState extends State<URLForm>
     });
   }
 
-  Future<void> _executeSubmit() async {
+  Future<void> _executeSubmit({ String? value }) async {
     if (widget.onSubmit == null) {
       return;
     }
@@ -100,7 +100,7 @@ class _URLFormState extends State<URLForm>
       _focusNode.unfocus();
       _isLoading = true;
     });
-    await widget.onSubmit!(_isFormValid);
+    await widget.onSubmit!(_isFormValid, value);
     setState(() {
       _isLoading = false;
     });
@@ -133,7 +133,7 @@ class _URLFormState extends State<URLForm>
         return Positioned(
           height: _expandAnimation.value == 0 ? 0 : _textFieldHeight,
           width: _expandAnimation.value == 0 ? 0 : _calculateTextFieldWidth(),
-          bottom: _expandAnimation.value * 60,
+          bottom: _expandAnimation.value * 68,
           right: 8,
           child: child!,
         );
@@ -167,20 +167,21 @@ class _URLFormState extends State<URLForm>
                         const BoxConstraints(maxWidth: 20, maxHeight: 20),
                     suffixIcon:
                         _isLoading ? const CircularProgressIndicator() : null),
-                onFieldSubmitted: _isLoading
-                    ? null
-                    : (value) async {
-                        await _executeSubmit();
-                        if (_isFormValid) {
-                          _toggleFormVisibility();
-                        }
-                      },
+                onSaved: _isLoading ? null : _handleSubmit,
+                onFieldSubmitted: _isLoading ? null : _handleSubmit,
               ),
             ),
           ),
         ),
       ),
     );
+  }
+
+  Future<void> _handleSubmit(String? value) async {
+    await _executeSubmit(value: value);
+    if (_isFormValid) {
+      _toggleFormVisibility();
+    }
   }
 
   double _calculateTextFieldWidth() {
@@ -225,11 +226,8 @@ class _URLFormState extends State<URLForm>
           ),
           onTap: _isLoading
               ? null
-              : () async {
-                  await _executeSubmit();
-                  if (_isFormValid) {
-                    _toggleFormVisibility();
-                  }
+              : () {
+                  _formKey.currentState?.save();
                 },
         ),
       ),
