@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nu_link_shortener/data/data_sources/http_data_source.dart';
 import 'package:nu_link_shortener/presentation/recent_urls_list/view/recent_urls_list.dart';
 import 'package:nu_link_shortener/presentation/url_form/views/url_form.dart';
 import 'package:nu_link_shortener/domain/extensions/string_extensions.dart';
@@ -45,7 +46,13 @@ class App extends StatelessWidget {
             return;
           }
           if (isValid) {
-            await Future.delayed(Duration(seconds: 2));
+            // TODO: Call Repository
+            try {
+              final result = await HTTPDataSource().createAlias(url: value);
+              print(result.toString());
+            } catch (error) {
+              print(error);
+            }
           }
         },
       ),
