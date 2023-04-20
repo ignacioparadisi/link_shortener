@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nu_link_shortener/presentation/recent_urls_list/view/recent_urls_list.dart';
-import 'package:nu_link_shortener/presentation/views/text_field_fab.dart';
+import 'package:nu_link_shortener/presentation/url_form/views/url_form.dart';
 import 'package:nu_link_shortener/domain/extensions/string_extensions.dart';
 
 // bool get isApplePlatform {
@@ -30,7 +30,7 @@ class App extends StatelessWidget {
         title: const Text('Expandable Fab'),
       ),
       body: const RecentURLsList(),
-      floatingActionButton: TextFieldFab(
+      floatingActionButton: URLForm(
         validator: (value) {
           if (value == null || value.isEmpty) {
             return null;

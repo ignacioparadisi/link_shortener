@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
+import 'package:nu_link_shortener/presentation/url_form/views/url_form_button.dart';
+
 @immutable
-class TextFieldFab extends StatefulWidget {
+class URLForm extends StatefulWidget {
   final String? Function(String?)? validator;
   final Future<void> Function(bool)? onSubmit;
-  const TextFieldFab(
+  const URLForm(
       {super.key, this.initialOpen, this.validator, this.onSubmit});
 
   final bool? initialOpen;
 
   @override
-  State<TextFieldFab> createState() => _TextFieldFabState();
+  State<URLForm> createState() => _URLFormState();
 }
 
-class _TextFieldFabState extends State<TextFieldFab>
+class _URLFormState extends State<URLForm>
     with SingleTickerProviderStateMixin {
   /// Node for controlling focus and unfocus of textfield
   final _focusNode = FocusNode();
@@ -34,9 +36,18 @@ class _TextFieldFabState extends State<TextFieldFab>
   /// Whether the form is loading or not
   bool _isLoading = false;
 
+  /// Maximum text field width
   final double _textFieldMaxWidth = 800;
+
+  /// Text field height
   final double _textFieldHeight = 60;
-  final double _textFieldPadding = 48;
+
+  /// Textfield hozitonal margin
+  final double _textFieldHorizontalMargin = 48;
+
+  bool get _isFormValid {
+    return _formKey.currentState?.validate() ?? true;
+  }
 
   @override
   void initState() {
@@ -89,7 +100,7 @@ class _TextFieldFabState extends State<TextFieldFab>
       _focusNode.unfocus();
       _isLoading = true;
     });
-    await widget.onSubmit!(_formKey.currentState?.validate() ?? true);
+    await widget.onSubmit!(_isFormValid);
     setState(() {
       _isLoading = false;
     });
@@ -121,11 +132,7 @@ class _TextFieldFabState extends State<TextFieldFab>
       builder: (context, child) {
         return Positioned(
           height: _expandAnimation.value == 0 ? 0 : _textFieldHeight,
-          width: _expandAnimation.value == 0
-              ? 0
-              : (MediaQuery.of(context).size.width > _textFieldMaxWidth
-                  ? _textFieldMaxWidth - _textFieldPadding
-                  : MediaQuery.of(context).size.width - _textFieldPadding),
+          width: _expandAnimation.value == 0 ? 0 : _calculateTextFieldWidth(),
           bottom: _expandAnimation.value * 60,
           right: 8,
           child: child!,
@@ -164,7 +171,7 @@ class _TextFieldFabState extends State<TextFieldFab>
                     ? null
                     : (value) async {
                         await _executeSubmit();
-                        if (_formKey.currentState?.validate() ?? true) {
+                        if (_isFormValid) {
                           _toggleFormVisibility();
                         }
                       },
@@ -176,36 +183,17 @@ class _TextFieldFabState extends State<TextFieldFab>
     );
   }
 
-  /// Build button with style for the form
-  Widget _buildFormButton({
-    Color? color,
-    required Widget icon,
-    required void Function()? onTap,
-  }) {
-    return SizedBox(
-      width: 56.0,
-      height: 56.0,
-      child: Center(
-        child: Material(
-          color: color,
-          shape: const CircleBorder(),
-          clipBehavior: Clip.antiAlias,
-          elevation: 4.0,
-          child: InkWell(
-            onTap: onTap,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: icon,
-            ),
-          ),
-        ),
-      ),
-    );
+  double _calculateTextFieldWidth() {
+    final viewWidth = MediaQuery.of(context).size.width;
+    if (viewWidth > _textFieldMaxWidth) {
+      return _textFieldMaxWidth - _textFieldHorizontalMargin;
+    }
+    return viewWidth - _textFieldHorizontalMargin;
   }
 
   /// Build Close form button
   Widget _buildCloseButton() {
-    return _buildFormButton(
+    return URLFormButton(
       onTap: _isLoading ? null : _toggleFormVisibility,
       icon: Icon(
         Icons.close,
@@ -229,7 +217,7 @@ class _TextFieldFabState extends State<TextFieldFab>
       },
       child: FadeTransition(
         opacity: _expandAnimation,
-        child: _buildFormButton(
+        child: URLFormButton(
           color: Theme.of(context).primaryColor,
           icon: const Icon(
             Icons.check,
@@ -239,7 +227,7 @@ class _TextFieldFabState extends State<TextFieldFab>
               ? null
               : () async {
                   await _executeSubmit();
-                  if (_formKey.currentState?.validate() ?? true) {
+                  if (_isFormValid) {
                     _toggleFormVisibility();
                   }
                 },

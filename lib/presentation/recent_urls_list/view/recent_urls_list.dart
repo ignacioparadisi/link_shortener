@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nu_link_shortener/router/presentation/views/fake_item.dart';
+import 'package:nu_link_shortener/presentation/views/fake_item.dart';
 
 class RecentURLsList extends StatelessWidget {
   const RecentURLsList({super.key});
