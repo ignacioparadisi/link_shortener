@@ -33,7 +33,7 @@ class RecentURLsList extends StatelessWidget {
                 title: item.links.short,
               ),
               cache: Duration.zero,
-              errorWidget: ListTile(title: Text(item.links.original)),
+              errorWidget: ListTile(title: Text(item.links.short),subtitle: Text('Preview not available'),),
               itemBuilder: (context, metadata, imageProvider) {
                 if (imageProvider == null) {
                   return ListTile(title: Text(item.links.short));
@@ -51,18 +51,17 @@ class RecentURLsList extends StatelessWidget {
     );
   }
 
-  Widget _previewCell({
-    required BuildContext context,
-    required String title,
-    ImageProvider<Object>? image,
-    void Function()? onTap
-  }) {
+  Widget _previewCell(
+      {required BuildContext context,
+      required String title,
+      ImageProvider<Object>? image,
+      void Function()? onTap}) {
     return InkWell(
       onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
               constraints: BoxConstraints(
@@ -81,7 +80,11 @@ class RecentURLsList extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 12),
-            Text(title, style: TextStyle(fontSize: Theme.of(context).textTheme.bodyLarge?.fontSize))
+            Text(
+              title,
+              style: TextStyle(
+                  fontSize: Theme.of(context).textTheme.titleMedium?.fontSize),
+            )
           ],
         ),
       ),

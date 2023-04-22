@@ -16,7 +16,7 @@ class URLsListView extends StatelessWidget {
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Expandable Fab'),
+            title: const Text('Link Shortener'),
           ),
           body: RecentURLsList(),
           floatingActionButton: URLForm(

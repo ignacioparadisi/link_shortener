@@ -8,9 +8,11 @@ abstract class AliasJSONKeys {
 class Alias {
   final String id;
   final AliasLink links;
+  final DateTime dateCreated;
 
   Alias.fromJSON(Map<String, dynamic> json):
     id = json[AliasJSONKeys.id],
-    links = AliasLink.fromJSON(json[AliasJSONKeys.links]);
+    links = AliasLink.fromJSON(json[AliasJSONKeys.links]),
+    dateCreated = DateTime.now();
     
 }

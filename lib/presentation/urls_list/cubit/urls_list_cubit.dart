@@ -15,6 +15,7 @@ class URLsListCubit extends Cubit<URLsListState> {
     emit(URLsListState(status: URLsListStatus.loading, items: aliases));
     final alias = await RepositoryFactory().aliasRepository.createAlias(url: url);
     aliases.add(alias);
+    aliases.sort((alias1, alias2) => alias2.dateCreated.compareTo(alias1.dateCreated));
     emit(URLsListState(status: URLsListStatus.success, items: aliases));
   }
 }
