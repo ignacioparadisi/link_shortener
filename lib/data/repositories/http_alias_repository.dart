@@ -13,10 +13,5 @@ class HTTPAliasRepository implements AliasRepository {
     final json = await _dataSource.createAlias(url: url);
     return Alias.fromJSON(json);
   }
-
-  @override
-  Future<Alias> getAliasByID({required int id}) {
-    // TODO: implement getAlias
-    throw UnimplementedError();
-  }
+  
 }

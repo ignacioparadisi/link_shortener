@@ -7,10 +7,6 @@ class URLsListCubit extends Cubit<URLsListState> {
   List<Alias> aliases = [];
   URLsListCubit() : super(const URLsListState());
 
-  void getRecentAliases() {
-
-  }
-
   Future<void> createAlias({ required String url }) async {
     emit(URLsListState(status: URLsListStatus.loading, items: aliases));
     final alias = await RepositoryFactory().aliasRepository.createAlias(url: url);

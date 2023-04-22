@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:nu_link_shortener/data/data_sources/data_srouce.dart';
 import 'package:nu_link_shortener/data/services/http_service.dart';
+import 'package:nu_link_shortener/domain/exceptions/request_exception.dart';
 
 abstract class URLShortenerHTTPPaths {
   static String createAliasPath() {
@@ -26,26 +27,4 @@ class HTTPDataSource implements DataSource {
     throw RequestException(message: response.reasonPhrase, code: '${response.statusCode}');
   }
 
-  @override
-  Future<dynamic> getAliasById({required String id}) {
-    // TODO: implement getAliasById
-    throw UnimplementedError();
-  }
-
-}
-
-class GeneralException implements Exception {
-  final String? message;
-  GeneralException({ this.message });
-
-  @override
-  String toString() {
-    if (message != null) return '$runtimeType: $message';
-    return runtimeType.toString();
-  }
-}
-
-class RequestException extends GeneralException {
-  final String? code;
-  RequestException({ super.message, this.code });
 }
