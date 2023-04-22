@@ -42,7 +42,6 @@ class RecentURLsList extends StatelessWidget {
                   context: context,
                   title: item.links.short,
                   image: imageProvider,
-                  onTap: () => print(item.id)
                 );
               },
             );
