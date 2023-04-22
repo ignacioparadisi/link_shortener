@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:http/http.dart' as http;
 
@@ -12,14 +13,19 @@ class HTTPService {
     return _instance;
   }
 
-  Future<http.Response> get({ required String path }) {
+  Future<http.Response> get({required String path}) {
     final url = Uri.https(baseURL.host, path);
     return http.get(url);
   }
 
-  Future<http.Response> post({ required String path, Map<String, dynamic>? body }) {
+  Future<http.Response> post(
+      {required String path, Map<String, dynamic>? body}) {
     final url = Uri.https(baseURL.host, path);
-    return http.post(url, body: body != null ? jsonEncode(body) : null);
+    final Map<String, String> headers = {
+      'Content-Type': 'application/json; charset=UTF-8'
+    };
+    final bodyEncoded = jsonEncode(body);
+    log('Executing $url\nWith body: $body');
+    return http.post(url, headers: headers, body: bodyEncoded);
   }
-
 }

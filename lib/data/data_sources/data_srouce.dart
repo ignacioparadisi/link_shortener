@@ -1,4 +1,4 @@
 abstract class DataSource {
-  Future<void> createAlias({ required String url });
-  Future<void> getAliasById({ required String id});
+  Future<dynamic> createAlias({ required String url });
+  Future<dynamic> getAliasById({ required String id});
 }

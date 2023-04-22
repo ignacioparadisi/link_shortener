@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nu_link_shortener/data/data_sources/http_data_source.dart';
 import 'dart:math' as math;
 
 import 'package:nu_link_shortener/presentation/url_form/views/url_form_button.dart';
@@ -7,8 +8,7 @@ import 'package:nu_link_shortener/presentation/url_form/views/url_form_button.da
 class URLForm extends StatefulWidget {
   final String? Function(String?)? validator;
   final Future<void> Function(bool, String?)? onSubmit;
-  const URLForm(
-      {super.key, this.initialOpen, this.validator, this.onSubmit});
+  const URLForm({super.key, this.initialOpen, this.validator, this.onSubmit});
 
   final bool? initialOpen;
 
@@ -16,8 +16,7 @@ class URLForm extends StatefulWidget {
   State<URLForm> createState() => _URLFormState();
 }
 
-class _URLFormState extends State<URLForm>
-    with SingleTickerProviderStateMixin {
+class _URLFormState extends State<URLForm> with SingleTickerProviderStateMixin {
   /// Node for controlling focus and unfocus of textfield
   final _focusNode = FocusNode();
 
@@ -44,6 +43,8 @@ class _URLFormState extends State<URLForm>
 
   /// Textfield hozitonal margin
   final double _textFieldHorizontalMargin = 48;
+
+  Exception? _error;
 
   bool get _isFormValid {
     return _formKey.currentState?.validate() ?? true;
@@ -92,7 +93,7 @@ class _URLFormState extends State<URLForm>
     });
   }
 
-  Future<void> _executeSubmit({ String? value }) async {
+  Future<void> _executeSubmit({String? value}) async {
     if (widget.onSubmit == null) {
       return;
     }
@@ -165,8 +166,7 @@ class _URLFormState extends State<URLForm>
                     hintText: 'URL',
                     suffixIconConstraints:
                         const BoxConstraints(maxWidth: 20, maxHeight: 20),
-                    suffixIcon:
-                        _isLoading ? const CircularProgressIndicator() : null),
+                    suffixIcon: _createSuffixIcon()),
                 onSaved: _isLoading ? null : _handleSubmit,
                 onFieldSubmitted: _isLoading ? null : _handleSubmit,
               ),
@@ -177,8 +177,38 @@ class _URLFormState extends State<URLForm>
     );
   }
 
+  Widget? _createSuffixIcon() {
+    if (_isLoading) {
+      return const CircularProgressIndicator();
+    }
+    if (_error != null) {
+      if (_error is GeneralException) {
+        return Tooltip(
+          message: _error.toString(),
+          triggerMode: TooltipTriggerMode.tap,
+          preferBelow: false,
+          child: Icon(Icons.error, color: Theme.of(context).colorScheme.error),
+        );
+      }
+    }
+    return null;
+  }
+
   Future<void> _handleSubmit(String? value) async {
-    await _executeSubmit(value: value);
+    _error = null;
+    try {
+      await _executeSubmit(value: value);
+    } catch (error) {
+      setState(() {
+        _isLoading = false;
+      });
+      print(error);
+      if (error is! Exception) return;
+      setState(() {
+        _error = error;
+      });
+      return;
+    }
     if (_isFormValid) {
       _toggleFormVisibility();
     }
