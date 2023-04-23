@@ -1,5 +1,6 @@
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nu_link_shortener/domain/repositories/repository_factory.dart';
 import 'package:nu_link_shortener/presentation/urls_list/cubit/urls_list_cubit.dart';
@@ -43,6 +44,11 @@ class RecentURLsList extends StatelessWidget {
                   context: context,
                   title: item.links.short,
                   image: imageProvider,
+                  onTap: () async {
+                    await Clipboard.setData(ClipboardData(text: item.links.short));
+                    if (!context.mounted) { return; }
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('URL copied to clipboard')));
+                },
                 );
               },
             );
