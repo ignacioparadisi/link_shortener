@@ -7,6 +7,8 @@ class AliasLink {
   final String original;
   final String short;
 
+  AliasLink({ required this.original, required this.short });
+
   AliasLink.fromJSON(Map<String, dynamic> json) :
     original = json[AliasLinkJSONKeys.original] as String,
     short = json[AliasLinkJSONKeys.short] as String;

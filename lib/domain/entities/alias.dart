@@ -1,3 +1,4 @@
+import 'package:flutter/rendering.dart';
 import 'package:nu_link_shortener/domain/entities/alias_link.dart';
 
 abstract class AliasJSONKeys {
@@ -9,6 +10,8 @@ class Alias {
   final String id;
   final AliasLink links;
   final DateTime dateCreated;
+
+  Alias({ required this.id, required this.links, required this.dateCreated });
 
   Alias.fromJSON(Map<String, dynamic> json):
     id = json[AliasJSONKeys.id],

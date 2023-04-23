@@ -1,9 +1,19 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
+import 'package:nu_link_shortener/data/data_sources/data_srouce.dart';
 import 'package:nu_link_shortener/data/data_sources/http_data_source.dart';
+import 'package:nu_link_shortener/data/data_sources/mock_data_source.dart';
 import 'package:nu_link_shortener/data/repositories/http_alias_repository.dart';
 import 'package:nu_link_shortener/domain/repositories/alias_repository.dart';
 
 class RepositoryFactory {
-  final _httpDataSource = HTTPDataSource();
+  DataSource get _httpDataSource { 
+    if (!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST')) {
+      return MockDataSource(); 
+    }
+    return HTTPDataSource(); 
+  }
 
   static final RepositoryFactory _instance = RepositoryFactory._internal();
 
