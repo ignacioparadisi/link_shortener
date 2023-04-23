@@ -154,7 +154,7 @@ class _URLFormState extends State<URLForm> with SingleTickerProviderStateMixin {
               ),
             ],
           ),
-          child: Center(
+          child: !_isOpen ? null : Center(
             child: Padding(
               padding: const EdgeInsetsDirectional.symmetric(horizontal: 16.0),
               child: TextFormField(

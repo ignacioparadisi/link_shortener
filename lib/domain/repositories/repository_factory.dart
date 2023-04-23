@@ -7,9 +7,13 @@ import 'package:nu_link_shortener/data/data_sources/mock_data_source.dart';
 import 'package:nu_link_shortener/data/repositories/http_alias_repository.dart';
 import 'package:nu_link_shortener/domain/repositories/alias_repository.dart';
 
+bool get isRunningTests {
+  return !kIsWeb && Platform.environment.containsKey('FLUTTER_TEST');
+}
+
 class RepositoryFactory {
   DataSource get _httpDataSource { 
-    if (!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST')) {
+    if (isRunningTests) {
       return MockDataSource(); 
     }
     return HTTPDataSource(); 
